@@ -1,27 +1,44 @@
 import file_Handler
+import parser
+import re
 
 
 class Person:
     all_ids = []
 
     def __init__(self, firstname, lastname, email, national_id, phone_number):
-        self.firstname = firstname
-        self.lastname = lastname
+        self.firstname = parser.fname
+        self.lastname = parser.lname
         self.email = self.validate_email_address(email)
         self.national_id = self.validate_national_id(national_id)
         self.phone_number = str(phone_number)
         # Person.file_handler.add_to_file(self.__dict__)
 
-    def validate_email_address(self, email_address):
-        if email_address.count("@") == 1 and email_address.endswith(".com"):
-            return email_address
-        raise Exception(f"Error! Invalid Email '{email_address}'.")
+    def validate_email_address(self):
+        regex = r'\w+([\.-]?\w+)@\w+([\.-]?\w+)\.([a-z]{2,3})$'
+        if(re.fullmatch(regex, self.email)):
+            print("Valid Email")
+        else:
+            print("Invalid Email")
+
+        
 
     def validate_national_id(self, national_id):
-        national_id = str(national_id)
-        if len(national_id) == 10 and national_id.isnumeric():
-            return national_id
-        raise Exception(f"Error! Invalid National ID '{national_id}'")
+        nat_card_list = self.national_id.split()
+        end_num = nat_card_list[-1]
+        nat_card_list.pop(-1)
+        for i in range (10,1,-1):
+            for j in nat_card_list:
+                sum += (int(j)* i)
+        x = sum % 11
+        if x<= 2 and x == end_num:
+            return 'your national card number is correct'
+        elif x > 2 and 11 - x == end_num:
+            return 'your national card number is correct'
+        else:
+            return ' your national card number is not correct! '
+
+        
 
     def edit_info(self, **kwargs):
         allowed_keys = self.__dict__.keys()
